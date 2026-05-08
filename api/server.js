@@ -53,6 +53,11 @@ import authRoutes from "../routes/authRoutes.js";
 import userRoutes from "../routes/userRoutes.js";
 import questionRoutes from "../routes/questionRoutes.js";
 import feedRoutes from "../routes/feedRoutes.js";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 app.set("trust proxy", 1);
@@ -78,7 +83,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/questions", questionRoutes);
 app.use("/api/feed", feedRoutes);
 
-app.use(express.static("public"));
+app.use(express.static(join(__dirname, "../public")));
 
 app.use(notFound);
 app.use(errorHandler);
