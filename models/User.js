@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs';
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema(
   {
@@ -21,9 +21,15 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
     passwordHash: { type: String, required: true },
-    displayName: { type: String, required: true, trim: true, minlength: 1, maxlength: 50 },
-    bio: { type: String, default: '', maxlength: 200 },
-    avatarUrl: { type: String, default: '' },
+    displayName: {
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 1,
+      maxlength: 50,
+    },
+    bio: { type: String, default: "", maxlength: 200 },
+    avatarUrl: { type: String, default: "" },
     acceptingQuestions: { type: Boolean, default: true },
     tags: {
       type: [String],
@@ -31,23 +37,29 @@ const userSchema = new mongoose.Schema(
       validate: {
         validator: (arr) =>
           arr.length <= 10 && arr.every((t) => /^[a-z0-9-]{2,20}$/.test(t)),
-        message: 'Invalid tags',
+        message: "Invalid tags",
       },
     },
   },
   { timestamps: true },
 );
 
-userSchema.set('toJSON', {
+userSchema.set("toJSON", {
   virtuals: true,
   versionKey: false,
+  // transform(_doc, ret) {
+  //   ret.id = ret._id.toString();
+  //   delete ret._id;
+  //   delete ret.passwordHash;
+  //   return ret;
+  // TODO:
+  // Hint: map _id -> id, delete _id, delete passwordHash. Return ret.
+  // Purpose: never leak passwordHash through res.json.
   transform(_doc, ret) {
+    ret.id = ret._id ? ret._id.toString() : undefined;
+    delete ret._id;
     delete ret.passwordHash;
     return ret;
-    // TODO:
-    // Hint: map _id -> id, delete _id, delete passwordHash. Return ret.
-    // Purpose: never leak passwordHash through res.json.
-    
   },
 });
 
@@ -55,17 +67,13 @@ userSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.passwordHash);
   // TODO:
   // Hint: bcrypt.compare(plain, this.passwordHash) — returns a Promise<boolean>.
-  
 };
-
 
 userSchema.statics.hashPassword = async function (password) {
   const salt = await bcrypt.genSalt(10);
   return await bcrypt.hash(password, salt);
   // TODO:
   // Hint: bcrypt.hash(plain, 10). Cost 10 is a reasonable default.
-  
 };
 
-
-export const User = mongoose.model('User', userSchema);
+export const User = mongoose.model("User", userSchema);

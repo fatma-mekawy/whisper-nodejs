@@ -1,6 +1,6 @@
-import { User } from '../models/User.js';
-import { signToken } from '../middleware/auth.js';
-import { HttpError } from '../middleware/errorHandler.js';
+import { User } from "../models/User.js";
+import { signToken } from "../middleware/auth.js";
+import { HttpError } from "../middleware/errorHandler.js";
 
 export async function signup(req, res, next) {
   // TODO:
@@ -15,7 +15,7 @@ export async function signup(req, res, next) {
       $or: [{ email }, { username }],
     });
     if (existingUser) {
-      throw new HttpError(409, 'User already exists');
+      throw new HttpError(409, "User already exists");
     }
     const passwordHash = await User.hashPassword(password);
     const user = await User.create({
@@ -28,7 +28,7 @@ export async function signup(req, res, next) {
     res.status(201).json({ token, user });
   } catch (err) {
     if (err.code === 11000) {
-      return next(new HttpError(409, 'Duplicate field'));
+      return next(new HttpError(409, "Duplicate field"));
     }
     next(err);
   }
@@ -39,23 +39,22 @@ export async function login(req, res, next) {
   // Hint: find user by email. If missing OR comparePassword fails, 401 with a GENERIC message
   // (don't leak which half was wrong). On success return { token, user }.
   // See: docs/API.md "POST /api/auth/login", tester/tests/auth.test.js
-    try {
+  try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (!user || !(await user.comparePassword(password))) {
-      throw new HttpError(401, 'Invalid credentials');
+      throw new HttpError(401, "Invalid credentials");
     }
     const token = signToken(user);
     res.json({ token, user });
   } catch (err) {
     next(err);
   }
- 
 }
 
 export async function me(req, res) {
   // TODO:
   // Hint: authenticate middleware has already attached the user — just return it.
   // See: docs/API.md "GET /api/auth/me", tester/tests/auth.test.js
-  res.json({ user: req.user });
+  res.json(req.user);
 }
