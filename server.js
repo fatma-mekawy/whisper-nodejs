@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import { connectDB } from "./config/db.js";
+import { ensureDB } from "./config/ensureDB.js";
 import { notFound } from "./middleware/notFound.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import authRoutes from "./routes/authRoutes.js";
@@ -17,6 +18,16 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 
+// Ensure DB is connected on every request (required for Vercel serverless)
+app.use(async (_req, _res, next) => {
+  try {
+    await ensureDB();
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.get("/health", (_req, res) => res.json({ ok: true }));
 
 app.use("/api/auth", authRoutes);
@@ -28,7 +39,5 @@ app.use(express.static("public"));
 
 app.use(notFound);
 app.use(errorHandler);
-
-
 
 export default app;
