@@ -170,10 +170,7 @@
 import { Question } from "../models/Question.js";
 import { User } from "../models/User.js";
 import { HttpError } from "../middleware/errorHandler.js";
-import { ensureDB } from "../config/ensureDB.js";
 
-export const signup = async (req, res) => {
-  await ensureDB();
 export async function sendQuestion(req, res, next) {
   try {
     const recipient = await User.findOne({ username: req.params.username });
@@ -316,5 +313,4 @@ export async function listPublicFeed(req, res, next) {
   } catch (err) {
     next(err);
   }
-}
 }

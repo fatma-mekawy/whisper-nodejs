@@ -1,11 +1,8 @@
-import { Router } from 'express';
-import { listGlobalFeed } from '../controllers/feedController.js';
-import { ensureDB } from "../config/ensureDB.js";
+import { Router } from "express";
+import { listGlobalFeed } from "../controllers/feedController.js";
 
-export const signup = async (req, res) => {
-  await ensureDB();
 const router = Router();
 
-router.get('/', listGlobalFeed);
+router.get("/", listGlobalFeed);
 
-export default router;}
+export default router;

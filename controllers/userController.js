@@ -10,10 +10,7 @@
 
 import { User } from "../models/User.js";
 import { HttpError } from "../middleware/errorHandler.js";
-import { ensureDB } from "../config/ensureDB.js";
 
-export const signup = async (req, res) => {
-  await ensureDB();
 export async function getPublicProfile(req, res, next) {
   try {
     const user = await User.findOne({ username: req.params.username }).select(
@@ -47,5 +44,4 @@ export async function updateMe(req, res, next) {
   } catch (err) {
     next(err);
   }
-}
 }
