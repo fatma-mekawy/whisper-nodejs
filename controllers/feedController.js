@@ -9,7 +9,10 @@
 import { Question } from "../models/Question.js";
 import { User } from "../models/User.js";
 import { HttpError } from "../middleware/errorHandler.js";
+import { ensureDB } from "../config/ensureDB.js";
 
+export const signup = async (req, res) => {
+  await ensureDB();
 export async function listGlobalFeed(req, res, next) {
   try {
     const { tag, page = 1, limit = 20 } = req.query;
@@ -52,4 +55,5 @@ export async function listGlobalFeed(req, res, next) {
   } catch (err) {
     next(err);
   }
+}
 }

@@ -29,12 +29,6 @@ app.use(express.static("public"));
 app.use(notFound);
 app.use(errorHandler);
 
-await connectDB();
 
-// Only start listening when run directly (not on Vercel)
-if (process.env.NODE_ENV !== "production") {
-  const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => console.log(`whisper listening on ${PORT}`));
-}
 
 export default app;

@@ -1,7 +1,10 @@
 import { User } from "../models/User.js";
 import { signToken } from "../middleware/auth.js";
 import { HttpError } from "../middleware/errorHandler.js";
+import { ensureDB } from "../config/ensureDB.js";
 
+export const signup = async (req, res) => {
+  await ensureDB();
 export async function signup(req, res, next) {
   // TODO:
   // Hint: validate already ran (see routes). Pull { username, email, password, displayName } from req.body.
@@ -57,4 +60,5 @@ export async function me(req, res) {
   // Hint: authenticate middleware has already attached the user — just return it.
   // See: docs/API.md "GET /api/auth/me", tester/tests/auth.test.js
   res.json(req.user);
+}
 }

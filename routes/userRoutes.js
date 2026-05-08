@@ -11,7 +11,10 @@ import {
 } from "../controllers/questionController.js";
 import { connectDB } from "../config/db.js";
 import { User } from "../models/user.js";
+import { ensureDB } from "../config/ensureDB.js";
 
+export const signup = async (req, res) => {
+  await ensureDB();
 const router = Router();
 
 const sendLimiter = rateLimit({
@@ -30,4 +33,4 @@ router.post(
 );
 router.get("/:username/questions", listPublicFeed);
 
-export default router;
+export default router;}
